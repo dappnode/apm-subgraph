@@ -1,6 +1,6 @@
 # Aragon Subgraph
 
-This is a subgraph for the [Aragon Project](https://github.com/aragon).
+This is a subgraph for the [Aragon Package Manager](https://github.com/aragon) registries hosting DAppNode packages.
 
 ## Brief Description of The Graph Node Setup
 
@@ -12,31 +12,11 @@ These subgraphs has three types of files which tell the Graph Node to ingest eve
 - A GraphQL schema (schema.graphql)
 - Mapping scripts (ACL.ts, constants.ts, Kernel.ts, DAOFactory.ts)
 
-This repository has these files created and ready to compile, so a user can start this subgraph on their own. The only thing that needs to be edited is the contract addresses in the `subgraph.yaml` file to change between Rinkeby or Mainnet `DAOFactory`.
-
 ### Local setup
 
 To test the subgraph locally please do the following tasks
 
-##### 1. Install aragonCLI and The Graph and local dependencies
-
-First make sure you have both Ganache and Graph CLIs, and install project dependencies:
-
-```bash
-  npm install -g @aragon/cli
-  npm install -g @graphprotocol/graph-cli
-  npm i
-```
-
-##### 2. Start aragen node
-
-Start a local aragen in a separate terminal with the following params:
-
-```bash
-  aragon devchain --verbose
-```
-
-##### 3. Start Graph node
+##### 1. Start Graph node
 
 In another terminal, clone the graph node and start it:
 
@@ -65,21 +45,4 @@ Below shows all the ways to query a Individual Subgraph and the network subgraph
 
 The query below shows all the information that is possible to query, but is limited to the first 5 instances. Limiting to 5 or 10 instances is good, because with no limit tens of thousands of results can be queried at once, which can be slow on your computer. There are many other filtering options that can be used, just check out the [querying api](https://github.com/graphprotocol/graph-node/blob/master/docs/graphql-api.md). Also check out the [GraphQL docs](https://graphql.org/learn/) if you are completely new to GraphQL and the info in this section doesn't make sense.
 
-#### Query example
-
-```graphql
-{
-  kernels(first: 5) {
-    id
-    acl {
-      id
-    }
-    appsProxies {
-      id
-      appID
-    }
-  }
-}
-```
-
-The command above can be copy pasted into the Graphiql interface in your browser at `127.0.0.1:8000`.
+<p align="center"><img title="Schema" src='schema.png' /></p>

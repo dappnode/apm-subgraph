@@ -16,7 +16,6 @@ schema {
 }
 
 type Query {
-  OrgFactory: OrgFactory
   RegistryFactory: RegistryFactory
 }
 ' > schema.graphql
