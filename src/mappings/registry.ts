@@ -10,7 +10,7 @@ import { Repo as RepoTemplate } from "../types/templates";
 import {
   NewRepo as NewRepoEvent,
   NewAppProxy as NewAppProxyEvent,
-} from "../types/templates/Registry/APMRegistry";
+} from "../types/dnp.dappnode.eth/APMRegistry";
 import { log } from "@graphprotocol/graph-ts";
 
 export function handleNewRepo(event: NewRepoEvent): void {
