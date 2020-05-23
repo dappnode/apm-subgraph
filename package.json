@@ -10,7 +10,7 @@
     "create:rpc": "graph create dao-subgraph --node http://127.0.0.1:8020",
     "watch-local": "graph deploy dao-subgraph --watch --debug --node http://127.0.0.1:8020/ --ipfs http://localhost:5001",
     "prepare": "mustache -p registryDataSource.template.yaml config/mainnet.json subgraph.template.yaml > subgraph.yaml && mustache config/mainnet.json src/helpers/ens.template.ts > src/helpers/ens.ts",
-    "deploy": "graph deploy --debug dao-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ 0xGabi/dao-subgraph"
+    "deploy": "graph deploy --debug dao-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ dapplion/apm-dappnode-registries"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.18.0",

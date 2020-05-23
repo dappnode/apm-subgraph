@@ -1,15 +1,7 @@
-type RegistryFactory @entity {
-  id: ID!
-  address: Bytes!
-  registryCount: Int!
-  registries: [Registry!]!
-}
-
 type Registry @entity {
   id: ID!
   address: Bytes! # Registry address
   name: String! # Registry name
-  node: Bytes! # Registry ENS node
   repoCount: Int!
   repos: [Repo!]
   #factory: RegistryFactory! @derivedFrom(field: "registries")
