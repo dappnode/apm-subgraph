@@ -1,51 +1,54 @@
 // Import entity types from the schema
-import { Repo as RepoEntity, Version as VersionEntity } from '../types/schema'
+import { Repo as RepoEntity, Version as VersionEntity } from "../types/schema";
 
-import { getAppMetadata } from '../helpers/ipfs'
+import { getAppMetadata } from "../helpers/ipfs";
 
 // Import templates types
 import {
   NewVersion as NewVersionEvent,
   Repo as RepoContract,
-} from '../types/templates/Repo/Repo'
+} from "../types/templates/Repo/Repo";
+import { log } from "@graphprotocol/graph-ts";
 
 export function handleNewVersion(event: NewVersionEvent): void {
-  const repoId = event.address.toHex()
-  const repo = RepoEntity.load(repoId)
+  const repoId = event.address.toHex();
+  const repo = RepoEntity.load(repoId);
 
   if (repo !== null) {
-    const repoContract = RepoContract.bind(event.address)
-    const versionData = repoContract.getByVersionId(event.params.versionId)
+    const repoContract = RepoContract.bind(event.address);
+    const versionData = repoContract.getByVersionId(event.params.versionId);
 
-    const codeAddress = versionData.value1
-    const contentUri = versionData.value2.toString()
-    const semanticVersion = event.params.semanticVersion.toString()
+    const codeAddress = versionData.value1;
+    const contentUri = versionData.value2.toString();
+    const semanticVersion = event.params.semanticVersion.toString();
 
     const versionId = codeAddress
       .toHexString()
-      .concat('-')
-      .concat(semanticVersion)
+      .concat("-")
+      .concat(semanticVersion);
+
+    log.info("New version {} {}", [repo.name, semanticVersion]);
 
     // create new version
-    let version = VersionEntity.load(versionId)
+    let version = VersionEntity.load(versionId);
     if (version == null) {
-      version = new VersionEntity(versionId) as VersionEntity
-      version.semanticVersion = semanticVersion
-      version.codeAddress = codeAddress
-      version.contentUri = contentUri
-      version.repoName = repo.name
-      version.repoAddress = repo.address
-      version.repoNamehash = repo.node
+      version = new VersionEntity(versionId) as VersionEntity;
+      version.semanticVersion = semanticVersion;
+      version.codeAddress = codeAddress;
+      version.contentUri = contentUri;
+      version.repoName = repo.name;
+      version.repoAddress = repo.address;
+      version.repoNamehash = repo.node;
       // Hack: only fetch from block onwards to reduce sync time
-      if (event.block.number.toString() >= '8490795') {
-        version.artifact = getAppMetadata(contentUri, 'artifact.json')
-        version.manifest = getAppMetadata(contentUri, 'manifest.json')
+      if (event.block.number.toString() >= "8490795") {
+        version.artifact = getAppMetadata(contentUri, "artifact.json");
+        version.manifest = getAppMetadata(contentUri, "manifest.json");
       }
     }
 
-    repo.lastVersion = version.id
+    repo.lastVersion = version.id;
 
-    repo.save()
-    version.save()
+    repo.save();
+    version.save();
   }
 }
