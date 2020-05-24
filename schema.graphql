@@ -14,6 +14,8 @@ type Repo @entity {
   name: String! # Repo name
   node: Bytes! # Repo ENS
   timestamp: Int! # Publish block timestamp
+  txHash: Bytes! # Repo creation
+  sender: Bytes! # Repo creation
   lastVersion: Version # Last Version
   versionCount: Int!
   versions: [Version!] # List of versions
@@ -29,6 +31,8 @@ type Version @entity {
   contentUri: String! # Content URI
   index: Int! # Version index (version.versionId)
   timestamp: Int! # Publish block timestamp
+  txHash: Bytes! # Version publish
+  sender: Bytes! # Version publish
   repoName: String! # Repo name
   repoAddress: Bytes! # Repo address
   repoNamehash: Bytes! # Repo ENS node

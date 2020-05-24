@@ -35,6 +35,8 @@ export function handleNewRepo(event: NewRepoEvent): void {
     repo.name = event.params.name;
     repo.node = event.params.id;
     repo.timestamp = event.block.timestamp.toI32();
+    repo.txHash = event.transaction.hash;
+    repo.sender = event.transaction.from;
     repo.registryName = registry.name;
     repo.registryId = registryId;
     repo.versionCount = 0;

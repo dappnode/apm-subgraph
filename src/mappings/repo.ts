@@ -1,11 +1,8 @@
-// Import entity types from the schema
 import {
   Registry as RegistryEntity,
   Repo as RepoEntity,
   Version as VersionEntity,
 } from "../types/schema";
-
-// Import templates types
 import {
   NewVersion as NewVersionEvent,
   Repo as RepoContract,
@@ -24,10 +21,7 @@ export function handleNewVersion(event: NewVersionEvent): void {
     const contentUri = versionData.value2.toString();
     const semanticVersion = event.params.semanticVersion.toString();
 
-    const versionId = codeAddress
-      .toHexString()
-      .concat("-")
-      .concat(semanticVersion);
+    const versionId = repo.id.concat("-").concat(semanticVersion);
 
     log.info("New version {} {}", [repo.name, semanticVersion]);
 
@@ -40,6 +34,8 @@ export function handleNewVersion(event: NewVersionEvent): void {
       version.contentUri = contentUri;
       version.index = event.params.versionId.toI32();
       version.timestamp = event.block.timestamp.toI32();
+      version.txHash = event.transaction.hash;
+      version.sender = event.transaction.from;
       version.repoName = repo.name;
       version.repoAddress = repo.address;
       version.repoNamehash = repo.node;
@@ -48,7 +44,7 @@ export function handleNewVersion(event: NewVersionEvent): void {
     repo.versionCount = repo.versionCount + 1;
     repo.lastVersion = version.id;
     const versions = repo.versions;
-    versions.push(repo.id);
+    versions.push(version.id);
     repo.versions = versions;
 
     let registry = RegistryEntity.load(repo.registryId);
