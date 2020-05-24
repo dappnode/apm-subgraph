@@ -1,29 +1,26 @@
-// Import entity types from the schema
 import {
   Registry as RegistryEntity,
   Repo as RepoEntity,
 } from "../types/schema";
-
-// Import templates types
 import { Repo as RepoTemplate } from "../types/templates";
-// Import event types
 import {
   NewRepo as NewRepoEvent,
   NewAppProxy as NewAppProxyEvent,
 } from "../types/dnp.dappnode.eth/APMRegistry";
 import { log } from "@graphprotocol/graph-ts";
+import { getRegistryName } from "../helpers/getRegistryName";
 
 export function handleNewRepo(event: NewRepoEvent): void {
-  const registryId = event.address.toHex();
+  const registryAddress = event.address.toHex();
+  const registryId = registryAddress;
   let registry = RegistryEntity.load(registryId);
   if (registry == null) {
     registry = new RegistryEntity(registryId) as RegistryEntity;
     registry.address = event.address;
     registry.repoCount = 0;
+    registry.versionCount = 0;
     registry.repos = [];
-    // Mock values to test
-    registry.node = event.transaction.hash;
-    registry.name = "";
+    registry.name = getRegistryName(registryAddress);
   }
   registry.repoCount = registry.repoCount + 1;
 
@@ -37,6 +34,11 @@ export function handleNewRepo(event: NewRepoEvent): void {
     repo.address = repoAddress;
     repo.name = event.params.name;
     repo.node = event.params.id;
+    repo.timestamp = event.block.timestamp.toI32();
+    repo.registryName = registry.name;
+    repo.registryId = registryId;
+    repo.versionCount = 0;
+    repo.versions = [];
   }
 
   log.info("New repo {}", [repo.name]);

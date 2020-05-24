@@ -1,7 +1,7 @@
 {
   "name": "@aragon/dao-subgraph",
   "version": "1.0.0",
-  "repository": "https://github.com/graphprotocol/aragon-network",
+  "repository": "https://github.com/dappnode/apm-subgraph",
   "license": "MIT",
   "scripts": {
     "build": "graph build",

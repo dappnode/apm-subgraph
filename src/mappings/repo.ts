@@ -1,7 +1,9 @@
 // Import entity types from the schema
-import { Repo as RepoEntity, Version as VersionEntity } from "../types/schema";
-
-import { getAppMetadata } from "../helpers/ipfs";
+import {
+  Registry as RegistryEntity,
+  Repo as RepoEntity,
+  Version as VersionEntity,
+} from "../types/schema";
 
 // Import templates types
 import {
@@ -36,17 +38,26 @@ export function handleNewVersion(event: NewVersionEvent): void {
       version.semanticVersion = semanticVersion;
       version.codeAddress = codeAddress;
       version.contentUri = contentUri;
+      version.index = event.params.versionId.toI32();
+      version.timestamp = event.block.timestamp.toI32();
       version.repoName = repo.name;
       version.repoAddress = repo.address;
       version.repoNamehash = repo.node;
-      // Hack: only fetch from block onwards to reduce sync time
-      if (event.block.number.toString() >= "8490795") {
-        version.artifact = getAppMetadata(contentUri, "artifact.json");
-        version.manifest = getAppMetadata(contentUri, "manifest.json");
-      }
+      version.registryName = repo.registryName;
     }
-
+    repo.versionCount = repo.versionCount + 1;
     repo.lastVersion = version.id;
+    const versions = repo.versions;
+    versions.push(repo.id);
+    repo.versions = versions;
+
+    let registry = RegistryEntity.load(repo.registryId);
+    if (registry == null) {
+      log.warning("Repo {} registry {} in null", [repoId, repo.registryId]);
+    } else {
+      registry.versionCount = registry.versionCount + 1;
+      registry.save();
+    }
 
     repo.save();
     version.save();
